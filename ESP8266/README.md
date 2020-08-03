@@ -1,6 +1,6 @@
 # Guide
 
-L'IP dans l'example est mon IP locale avec le port changé à 81 vu que le port 80 est déjà utilisé...
+L'IP dans l'exemple est mon IP locale avec le port changé à 81 vu que le port 80 est déjà utilisé...
 
 ## Panel de contrôle
 
@@ -97,7 +97,7 @@ void loop(void){
 
 <https://circuits4you.com/2018/02/05/esp8266-arduino-wifi-web-server-led-on-off-control/>
 
-La led de cet example est celle du GPIO_2, soit la LED intégrée qui est la seule à fonctionner en inversé ```HIGH<->LOW```
+La led de cet exemple est celle du GPIO_2, soit la LED intégrée qui est la seule à fonctionner en inversé ```HIGH<->LOW```
 
 ```c
 #include <ESP8266WiFi.h>
