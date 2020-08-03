@@ -172,7 +172,7 @@ void loop(void){
 |GPIO|Label|Couleur|Utilisé|Commentaire|
 |---|---|---|---|---|
 |```0```|D3||||
-|```2```|D2|Bleu||LED intégrée, fonctionne en inversé ```HIGH<->LOW```|
+|```2```|D4|Bleu||LED intégrée, fonctionne en inversé ```HIGH<->LOW```|
 |```4```|D2|Rouge|X||
 |```5```|D1|Vert|X||
 |```12```|D6||||
