@@ -1,0 +1,167 @@
+unit Unit1;
+
+interface
+
+uses
+  Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes, Vcl.Graphics,
+  Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls,
+  Vcl.Menus, System.ImageList, Vcl.ImgList;
+
+type
+  TForm1 = class(TForm)
+    TrayIcon1: TTrayIcon;
+    bGreen: TBitBtn;
+    bRed: TBitBtn;
+    bYellow: TBitBtn;
+    bOff: TBitBtn;
+    pParam: TPanel;
+    eUrl: TEdit;
+    bValider: TBitBtn;
+    lParam: TLabel;
+    pInfos: TPanel;
+    PopupMenu1: TPopupMenu;
+    miParam: TMenuItem;
+    miGreen: TMenuItem;
+    miRed: TMenuItem;
+    miYellow: TMenuItem;
+    miOff: TMenuItem;
+    N1: TMenuItem;
+    miClose: TMenuItem;
+    ImageList1: TImageList;
+    procedure bValiderClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure bBtnClick(Sender: TObject);
+    procedure TrayIcon1DblClick(Sender: TObject);
+    procedure miCloseClick(Sender: TObject);
+  private
+    function Requete(sUrl : string) : string;
+    procedure LectureLED;
+    { Déclarations privées }
+
+  public
+    { Déclarations publiques }
+
+  end;
+
+var
+  Form1: TForm1;
+
+implementation
+
+{$R *.dfm}
+
+uses IniFiles, OleAuto;
+
+procedure TForm1.bBtnClick(Sender: TObject);
+Const Chaine = 'setGPIO?gpio=';
+var sURL,
+    sResultat : string;
+begin
+   if (Sender = bGreen) or (Sender = miGreen) then
+      sURL := '5'
+   else
+   if (Sender = bRed) or (Sender = miRed) then
+      sURL := '4'
+   else
+   if (Sender = bYellow) or (Sender = miYellow) then
+      sURL := '14'
+   else
+   if (Sender = bOff) or (Sender = miOff) then
+      sURL := '0';
+
+   sResultat := Requete(eUrl.Text + Chaine + sURL);
+
+   if ((Sender = bGreen) or (Sender = miGreen)) and (sResultat = 'GREEN') then
+   // afficher couleur trayicon
+   else
+   if ((Sender = bRed) or (Sender = miRed)) and (sResultat = 'RED') then
+   // afficher couleur trayicon
+   else
+   if ((Sender = bYellow) or (Sender = miYellow)) and (sResultat = 'YELLOW') then
+   // afficher couleur trayicon
+   else
+   if ((Sender = bOff) or (Sender = miOff)) and (sResultat = 'OFF') then
+   // afficher couleur trayicon
+   else
+   // afficher ATTENTION
+
+end;
+
+function TForm1.Requete(sUrl : string) : string;
+var
+    Request: OleVariant;
+begin
+   Result := '';
+   try
+      // create the WinHttpRequest object instance
+      Request := CreateOleObject('WinHttp.WinHttpRequest.5.1');
+      Request.setTimeouts(2000, 2000, 2000, 2000);
+      // open HTTP connection with GET method in synchronous mode
+      Request.Open('GET', sURL, False);
+      try
+         // until WinHTTP completely receives the response (synchronous mode)
+         Request.Send;
+         // store the response into the field for synchronization
+         Result := Request.ResponseText;
+      except
+//         on E:Exception do
+//            raise Exception.Create(Format('Unhandled Exception:[%s] while setting timeout to [%d] - ',[E.ClassName, 2000, e.Message]));
+      end;
+   finally
+      // release the WinHttpRequest object instance
+      Request := Unassigned;
+   end;
+end;
+
+procedure TForm1.TrayIcon1DblClick(Sender: TObject);
+begin
+   Form1.Visible := not Form1.Visible;
+end;
+
+procedure TForm1.bValiderClick(Sender: TObject);
+var ifIniFile : TIniFile;
+begin
+   if Requete(eUrl.Text + 'readDeviceName') <> '' then
+   begin
+      try
+         ifIniFile := TIniFile.create(ExtractFileDir(ExtractFileDir(ExtractFileDir(ExtractFileDir(ParamStr(0))))) + '\ParamProjet.ini');
+         ifIniFile.WriteString('PARAM', 'Url', eUrl.Text);
+      finally
+         ifIniFile.Free;
+      end;
+   end
+   else
+      showmessage('Problème lors de la communication avec le module');
+
+   LectureLED;
+end;
+
+procedure TForm1.FormCreate(Sender: TObject);
+var ifIniFile : TIniFile;
+begin
+   try
+      ifIniFile := TIniFile.create(ExtractFileDir(ExtractFileDir(ExtractFileDir(ExtractFileDir(ParamStr(0))))) + '\ParamProjet.ini');
+      eUrl.Text := ifIniFile.ReadString('PARAM', 'Url', '');
+   finally
+      ifIniFile.Free;
+   end;
+
+   LectureLED;
+// Traiter le masquage de la fiche si tt ok
+//   Form1.Visible := eUrl.Text <> '';
+end;
+
+procedure TForm1.miCloseClick(Sender: TObject);
+begin
+   Close;
+end;
+
+procedure TForm1.LectureLED;
+begin
+   case Requete(eUrl.Text + 'readLED') of
+      OFF : ;
+   end;
+//   http://192.168.0.25:81/readLED
+end;
+
+end.

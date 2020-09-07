@@ -34,18 +34,19 @@ Pour trouver le module plus facilement, il est possible de s'aider d'un IP Scann
 
 ## Client
 
-Le client a pour objectif d'envoyer au module les informations de disponibilité.
+Le client à pour objectif d'envoyer au module les informations de disponibilité.
+- https://www.generacodice.com/en/articolo/427837/How-to-make-an-HTTP-request-in-a-separate-thread-with-timeout
 
 Il doit ainsi récupérer l'état de l'utilisateur en regardant dans :
 
 - API?
+  - Windows
+    - https://stackoverflow.com/questions/45988192/detect-when-user-locks-unlocks-screen-in-windows-7-with-delphi
   - Teams
     - <https://docs.microsoft.com/en-us/graph/api/resources/presence?view=graph-rest-beta>
     - <https://docs.microsoft.com/en-us/graph/api/presence-get?view=graph-rest-beta&tabs=http>
   - Cisco
     - <https://developer.cisco.com/site/im-and-presence/documents/>
-  - Windows
-    - <https://docs.microsoft.com/fr-fr/windows/win32/api/winuser/nf-winuser-lockworkstation?redirectedfrom=MSDN>
   - Outlook
     - <https://docs.microsoft.com/fr-fr/graph/api/calendar-getschedule?view=graph-rest-1.0&tabs=http>
     - <https://docs.microsoft.com/fr-fr/graph/outlook-get-free-busy-schedule>

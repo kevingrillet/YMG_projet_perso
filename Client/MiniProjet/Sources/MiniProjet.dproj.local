@@ -1,0 +1,14 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<BorlandProject>
+	<Transactions>
+    <Transaction>2020/07/10 15:46:18.000.470,=C:\Users\t.coissieux\Documents\Embarcadero\Studio\Projets\Unit1.pas</Transaction>
+    <Transaction>2020/07/10 15:47:23.000.459,D:\Ymag\Pareo\Test\Sources\Unit1.dfm=C:\Users\t.coissieux\Documents\Embarcadero\Studio\Projets\Unit1.dfm</Transaction>
+    <Transaction>2020/07/10 15:47:23.000.459,D:\Ymag\Pareo\Test\Sources\Unit1.pas=C:\Users\t.coissieux\Documents\Embarcadero\Studio\Projets\Unit1.pas</Transaction>
+    <Transaction>2020/07/10 15:48:45.000.475,D:\Ymag\Pareo\Test\Sources\Project1.dproj=C:\Users\t.coissieux\Documents\Embarcadero\Studio\Projets\Project1.dproj</Transaction>
+    <Transaction>2020/09/07 16:06:38.000.268,D:\Ymag\Pareo\MiniProjet\Sources\Unit1.pas=D:\Ymag\Pareo\MiniProjet\Sources\MiniProjet.pas</Transaction>
+    <Transaction>2020/09/07 16:06:38.000.268,D:\Ymag\Pareo\MiniProjet\Sources\Unit1.dfm=D:\Ymag\Pareo\MiniProjet\Sources\MiniProjet.dfm</Transaction>
+    <Transaction>2020/09/07 16:08:04.000.896,D:\Ymag\Pareo\MiniProjet\Sources\MiniProjet.pas=D:\Ymag\Pareo\MiniProjet\Sources\uMiniProjet.pas</Transaction>
+    <Transaction>2020/09/07 16:08:04.000.896,D:\Ymag\Pareo\MiniProjet\Sources\MiniProjet.dfm=D:\Ymag\Pareo\MiniProjet\Sources\uMiniProjet.dfm</Transaction>
+    <Transaction>2020/09/07 16:08:12.000.640,D:\Ymag\Pareo\MiniProjet\Sources\Project1.dproj=D:\Ymag\Pareo\MiniProjet\Sources\MiniProjet.dproj</Transaction>
+  </Transactions>
+</BorlandProject>
