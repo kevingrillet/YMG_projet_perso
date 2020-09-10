@@ -1,14 +1,12 @@
 # Guide
 
-L'IP dans l'exemple est mon IP locale avec le port changé à 81 vu que le port 80 est déjà utilisé...
-
 ## Panel de contrôle
 
-<http://192.168.0.25:81/>
+<http://192.168.0.200:80/>
 
 ## Ecriture > GPIO
 
-<http://192.168.0.25:81/setGPIO?gpio=>
+<http://192.168.0.200:80/setGPIO?gpio=>
 
 |gpio|OUTPUT|
 |---|---|
@@ -19,7 +17,7 @@ L'IP dans l'exemple est mon IP locale avec le port changé à 81 vu que le port 
 
 ## Lecture > Device Name
 
-<http://192.168.0.25:81/readDeviceName>
+<http://192.168.0.200:80/readDeviceName>
 
 |OUTPUT|
 |---|
@@ -27,7 +25,7 @@ L'IP dans l'exemple est mon IP locale avec le port changé à 81 vu que le port 
 
 ## Lecture > GPIO
 
-<http://192.168.0.25:81/readGPIO?gpio=>
+<http://192.168.0.200:80/readGPIO?gpio=>
 
 |gpio|OUTPUT|
 |---|---|
@@ -37,7 +35,7 @@ L'IP dans l'exemple est mon IP locale avec le port changé à 81 vu que le port 
 
 ## Lecture > LED
 
-<http://192.168.0.25:81/readLED>
+<http://192.168.0.200:80/readLED>
 
 |OUTPUT|
 |---|
@@ -172,7 +170,7 @@ void loop(void){
 |GPIO|Label|Couleur|Utilisé|Commentaire|
 |---|---|---|---|---|
 |```0```|D3||||
-|```2```|D4|Bleu||LED intégrée, fonctionne en inversé ```HIGH<->LOW```|
+|```2```|D2|Bleu||LED intégrée, fonctionne en inversé ```HIGH<->LOW```|
 |```4```|D2|Rouge|X||
 |```5```|D1|Vert|X||
 |```12```|D6||||
@@ -318,3 +316,7 @@ void setup(void){
 |Rouge|100|
 |Jaune|100|
 |Bleu|100|
+
+### Câblage
+![](https://raw.githubusercontent.com/kevingrillet/YMG_projet_perso/master/ESP8266/R&D/ProjetPerso-ESP8266_bb.png)
+Généré via Fritzing.

@@ -18,6 +18,7 @@
 #define GPIO_5    5 // D1 GREEN
 #define GPIO_14  14 // D5 YELLOW
 
+// HTML Formatter: https://webformatter.com/html
 const char MAIN_page[] PROGMEM = R"=====(
 <!DOCTYPE html>
 <html lang="en">
