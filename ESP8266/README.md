@@ -319,4 +319,3 @@ void setup(void){
 
 ### Câblage
 ![](https://raw.githubusercontent.com/kevingrillet/YMG_projet_perso/master/ESP8266/R&D/ProjetPerso-ESP8266_bb.png)
-Généré via Fritzing.
