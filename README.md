@@ -4,6 +4,8 @@ Projet ayant pour objectif de faire une signalétique de la disponibilité de qu
 
 Un peu comme les voyants au-dessus des places de parking de centre commercial.
 
+Cette idée nous vient d'un cas réel: les CDP ayant été nos voisins pendant presque un an nous avons répondu toutes les 10 minutes à la question "Est ce qu'ils sont disponibles?" car leur porte était fermée.
+
 ## IOT: ESP8266
 
 [Ce module](<https://www.amazon.fr/gp/product/B0754W6Z2F/>) a été choisis car il ne coute presque rien et que j'en avais déjà chez moi :)
@@ -30,40 +32,37 @@ En se branchant au moniteur série lors de son premier démarrage (après avoir 
 
 Pour trouver le module plus facilement, il est possible de s'aider d'un [IP Scanner](<https://www.advanced-ip-scanner.com/>).
 
+### Évolutions possibles pour un module multi-utilisateur
+
+- Ajouter une gestion multilisateur via une ```map``` où les statuts sont affichés suivant la règle suivante:
+```Occupé [RED] > Absent [YELLOW] > Disponible [GREEN] > Invisible [OFF]```
+
+- Ajouter un système pour vider la map toutes les heures pour ne pas conserver un utilisateur n'ayant pas été déconnecté proprement.
+	- <https://circuits4you.com/2018/01/02/esp8266-nodemcu-ntp-time-clock/>
+
 ## Client
 
 Le client à pour objectif d'envoyer au module les informations de disponibilité.
-- <https://www.generacodice.com/en/articolo/427837/How-to-make-an-HTTP-request-in-a-separate-thread-with-timeout>
 
 Il doit ainsi récupérer l'état de l'utilisateur en regardant dans :
 
-- API?
-  - Windows
+- Windows
     - <https://stackoverflow.com/questions/45988192/detect-when-user-locks-unlocks-screen-in-windows-7-with-delphi>
-  - Teams
-    - <https://docs.microsoft.com/en-us/graph/api/resources/presence?view=graph-rest-beta>
-    - <https://docs.microsoft.com/en-us/graph/api/presence-get?view=graph-rest-beta&tabs=http>
-  - Cisco
-    - <https://developer.cisco.com/site/im-and-presence/documents/>
-  - Outlook
-    - <https://docs.microsoft.com/fr-fr/graph/api/calendar-getschedule?view=graph-rest-1.0&tabs=http>
-    - <https://docs.microsoft.com/fr-fr/graph/outlook-get-free-busy-schedule>
-- ICalendar
-  - Magy > Fichier > Paramètres utilisateur > ICalendar
+- Teams
+    - Authentification:
+        - <https://docs.microsoft.com/fr-fr/graph/auth-register-app-v2?context=graph%2Fapi%2Fbeta&view=graph-rest-beta>
+        - <https://www.example-code.com/delphidll/microsoft_graph_oauth2_access_token.asp>
+    - Présence:
+        - <https://docs.microsoft.com/fr-fr/graph/api/presence-get?view=graph-rest-beta&tabs=http> 
+
+Pour Teams ce n'est actuellement pas possible, nous avons un problème avec l'inscription de notre application sur la Plateforme d’identités Microsoft. Nous n'avons pas les droits.
+
+
 
 ### Langage
 
-En soit tout fonctionne, Delphi, C#, AutoIt, reste à faire le choix.
+Le client a été réalisé en Delphi.
 
-J'imagine niveau interface une tray icon + une page de configuration dans laquelle on renseigne les informations essentielles aux API et l'IP:Port du module -> conf.ini
+Il se compose d'un écran de paramétrage et d'une TrayIcon, et enregistre son paramétrage (IP et automatismes) dans un fichier ```.ini``` caché.
 
-## Question du multi-utilisateur / module ou module sans utilisateur
-
-Pour passer en multi utilisateur / module il serait possible de passer par un tableau et plusieurs paramètres pour signaler la disponibilité.
-Ajouter de l'intelligence au module au final, mais est-ce que c'est réellement son but? Il est très limité niveau mémoire et vitesse.
-
-Le plus propre serait d'ajouter une couche serveur avec une BDD qui ferait l'intermédiaire entre le client et le module.
-
-Il serait ainsi possible de configurer que tel client (utilisateur) correspond à tel module.
-
-Il serait aussi possible de faire des routines qui s'occupent de modules sans client (salles de réunion par exemple).
+![](https://raw.githubusercontent.com/kevingrillet/YMG_projet_perso/master/Client/R&D/ProjetPerso-Client.png)
