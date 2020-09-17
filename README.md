@@ -34,8 +34,9 @@ Pour trouver le module plus facilement, il est possible de s'aider d'un [IP Scan
 
 ### Évolutions possibles pour un module multi-utilisateur
 
-- Ajouter une gestion multilisateur via une [```map```] où les statuts sont affichés suivant la règle suivante:
-[```Occupé [RED] > Absent [YELLOW] > Disponible [GREEN] > Invisible [OFF]```]
+- Ajouter une gestion multilisateur via une ```map``` où les statuts sont affichés suivant la règle suivante:
+
+    - ```Occupé [RED] > Absent [YELLOW] > Disponible [GREEN] > Invisible [OFF]```
 
 - Ajouter un système pour vider la map toutes les heures pour ne pas conserver un utilisateur n'ayant pas été déconnecté proprement.
 	- <https://circuits4you.com/2018/01/02/esp8266-nodemcu-ntp-time-clock/>
@@ -63,6 +64,6 @@ Pour Teams ce n'est actuellement pas possible, nous avons un problème avec l'in
 
 Le client a été réalisé en Delphi.
 
-Il se compose d'un écran de paramétrage et d'une TrayIcon, et enregistre son paramétrage (IP et automatismes) dans un fichier [```.ini```] caché.
+Il se compose d'un écran de paramétrage et d'une TrayIcon, et enregistre son paramétrage (IP et automatismes) dans un fichier ```.ini``` caché.
 
 ![](https://raw.githubusercontent.com/kevingrillet/YMG_projet_perso/master/Client/R&D/ProjetPerso-Client.png)
