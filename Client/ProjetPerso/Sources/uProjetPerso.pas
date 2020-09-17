@@ -44,9 +44,12 @@ type
       procedure miCloseClick(Sender: TObject);
       procedure FormDestroy(Sender: TObject);
       procedure miRefreshClick(Sender: TObject);
+      procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 
    private
-      procedure EnableButtons(bState: boolean);
+      FbCanClose: Boolean;
+
+      procedure EnableButtons(bState: Boolean);
 
       /// <summary>
       /// Permet de dialoguer avec le module via une requète HttpGet
@@ -105,6 +108,7 @@ type
       CST_URL_SET_GPIO = 'setGPIO?gpio=';
 
       CST_CONF_FILE = 'ProjetPersoConf.ini';
+
    public
       { Déclarations publiques }
 
@@ -120,9 +124,9 @@ implementation
 uses IniFiles, IdHTTP;
 
 // Fonctions permettant de s'abonner au verrouillage / déverrouillage de la session Windows
-function WTSRegisterSessionNotification(hWnd: hWnd; dwFlags: DWORD): boolean;
+function WTSRegisterSessionNotification(hWnd: hWnd; dwFlags: DWORD): Boolean;
   stdcall; external 'wtsapi32.dll' name 'WTSRegisterSessionNotification';
-function WTSUnRegisterSessionNotification(hWnd: hWnd): boolean; stdcall;
+function WTSUnRegisterSessionNotification(hWnd: hWnd): Boolean; stdcall;
   external 'wtsapi32.dll' name 'WTSUnRegisterSessionNotification';
 
 procedure TfProjetPerso.bBtnClick(Sender: TObject);
@@ -173,7 +177,9 @@ begin
         CST_CONF_FILE);
       try
          ifIniFile.WriteString('CONF', 'Url', eUrl.Text);
+{$WARN SYMBOL_PLATFORM OFF}
          FileSetAttr(ifIniFile.FileName, faHidden);
+{$WARN SYMBOL_PLATFORM ON}
       finally
          ifIniFile.Free;
       end;
@@ -189,15 +195,18 @@ begin
    UpdateTrayIcon;
 end;
 
+procedure TfProjetPerso.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+   CanClose := FbCanClose;
+   if not CanClose then
+      fProjetPerso.Visible := False;
+end;
+
 procedure TfProjetPerso.FormCreate(Sender: TObject);
 var
-   myIcon: TIcon;
    ifIniFile: TIniFile;
 begin
-   imageList32.GetIcon(7, myIcon); 
-   fProjetPerso.Icon := myIcon; 
-   myIcon.Free;
-   
+   FbCanClose := False;
 
    ifIniFile := TIniFile.Create((ExtractFileDir(ParamStr(0))) + '\' +
      CST_CONF_FILE);
@@ -207,10 +216,10 @@ begin
          cbWindows.State := cbChecked
       else
          cbWindows.State := cbUnChecked;
-//      if ifIniFile.ReadBool('AUTO', 'Teams', True) then
-//         cbTeams.State := cbChecked
-//      else
-//         cbTeams.State := cbUnChecked;
+      // if ifIniFile.ReadBool('AUTO', 'Teams', True) then
+      // cbTeams.State := cbChecked
+      // else
+      // cbTeams.State := cbUnChecked;
    finally
       ifIniFile.Free;
    end;
@@ -242,6 +251,7 @@ end;
 
 procedure TfProjetPerso.miCloseClick(Sender: TObject);
 begin
+   FbCanClose := True;
    Close;
 end;
 
@@ -295,7 +305,7 @@ begin
    inherited;
 end;
 
-procedure TfProjetPerso.EnableButtons(bState: boolean);
+procedure TfProjetPerso.EnableButtons(bState: Boolean);
 begin
    bOff.Enabled := bState;
    bGreen.Enabled := bState;
