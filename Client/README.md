@@ -111,7 +111,11 @@ end.
 
 ### Évolution possible pour ajouter un fonctionnement avec Teams.
 
-Pour Teams ce n'est actuellement pas possible, nous avons un problème avec l'inscription de notre application sur la Plateforme d’identités Microsoft. Nous n'avons pas les droits.
+Pour Teams ce n'est actuellement pas possible, nous avons un problème avec l'inscription de notre application sur la Plateforme d’identités Microsoft. La page ne fonctionne pas au moment ou nous développons.
+
+<https://portal.azure.com/#blade/Microsoft_AAD_IAM/ActiveDirectoryMenuBlade/RegisteredApps>
+
+Le principe serait le suivant :
 
 - Authentification:
 	- <https://docs.microsoft.com/fr-fr/graph/auth-register-app-v2?context=graph%2Fapi%2Fbeta&view=graph-rest-beta>

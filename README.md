@@ -4,7 +4,7 @@ Projet ayant pour objectif de faire une signalétique de la disponibilité de qu
 
 Un peu comme les voyants au-dessus des places de parking de centre commercial.
 
-![](https://raw.githubusercontent.com/kevingrillet/YMG_projet_perso/master/Documentation/Parking.jpg)(<https://www.ledinside.com/press/2017/2/circontrol_s_ledpark_achieves_85_savings_in_car_park_lighting>)
+![](https://raw.githubusercontent.com/kevingrillet/YMG_projet_perso/master/Documentation/Parking.jpg)
 
 Cette idée nous vient d'un cas réel : les CDP ayant été nos voisins pendant presque un an nous avons répondu toutes les 10 minutes à la question "Est-ce qu'ils sont disponibles ?" car leur porte était fermée.
 
@@ -22,7 +22,7 @@ Le code est disponible à cet emplacement:  [```ESP8266\Module```](<https://gith
 
 Pour plus de facilité pour lire le fichier HTML celui-ci est dupliqué ici: [```ESP8266\index.html```](<https://github.com/kevingrillet/YMG_projet_perso/blob/master/ESP8266/index.html>).
 
-Il y a aussi [```ESP8266\ReadMe.md```](<https://github.com/kevingrillet/YMG_projet_perso/tree/master/ESP8266/>) pour aider à la compréhension des différentes interfaces.
+Il y a aussi [```ESP8266\README.md```](<https://github.com/kevingrillet/YMG_projet_perso/tree/master/ESP8266/>) pour aider à la compréhension des différentes interfaces.
 
 ### Conseils d'utilisation
 
@@ -58,4 +58,4 @@ Il se compose d'un écran de paramétrage et d'une TrayIcon, et enregistre son p
 
 Le code est disponible à cet emplacement:  [```Client/ProjetPerso/Sources```](<https://github.com/kevingrillet/YMG_projet_perso/tree/master/Client/ProjetPerso/Sources>).
 
-Il y a aussi [```Client\ReadMe.md```](<https://github.com/kevingrillet/YMG_projet_perso/tree/master/Client/>) pour aider à la compréhension du code.
+Il y a aussi [```Client\README.md```](<https://github.com/kevingrillet/YMG_projet_perso/tree/master/Client/>) pour aider à la compréhension du code.
