@@ -47,7 +47,7 @@ Il est possible d'ajouter un ```timeout``` si jamais le module ne répond pas, p
 HTTP.ConnectTimeout := 1000; // 1s
 ```
 
-### Détecter quand un utilisateur vérouille/déverouille sa session
+### Détecter quand un utilisateur verrouille/déverrouille sa session
 
 <https://stackoverflow.com/questions/45988192/detect-when-user-locks-unlocks-screen-in-windows-7-with-delphi>
 
