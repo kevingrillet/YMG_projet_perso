@@ -4,10 +4,9 @@ interface
 
 uses
    Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
-   System.Classes, Vcl.Graphics,
-   Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Buttons,
-   Vcl.ExtCtrls,
-   Vcl.Menus, System.ImageList, Vcl.ImgList;
+   System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
+   Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Menus, System.ImageList,
+   Vcl.ImgList;
 
 type
    TfProjetPerso = class(TForm)
@@ -20,7 +19,7 @@ type
       eUrl: TEdit;
       bValider: TBitBtn;
       lParam: TLabel;
-      pInfos: TPanel;
+      pActions: TPanel;
       popupMenuTrayIcon: TPopupMenu;
       miParam: TMenuItem;
       miGreen: TMenuItem;
@@ -36,7 +35,13 @@ type
       pAuto: TPanel;
       cbWindows: TCheckBox;
       cbTeams: TCheckBox;
-      Label1: TLabel;
+      lAuto: TLabel;
+      pFooter: TPanel;
+      llSources: TLinkLabel;
+      lSources: TLabel;
+      iHelp: TImage;
+      fpAuto: TFlowPanel;
+      fpActions: TFlowPanel;
       procedure bValiderClick(Sender: TObject);
       procedure FormCreate(Sender: TObject);
       procedure bBtnClick(Sender: TObject);
@@ -45,10 +50,51 @@ type
       procedure FormDestroy(Sender: TObject);
       procedure miRefreshClick(Sender: TObject);
       procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+      procedure llSourcesClick(Sender: TObject);
 
-   private
+   const
+      CST_CONF_FILE = 'ProjetPersoConf.ini';
+
+      CST_ERROR = 'ERROR';
+      CST_ERROR_VALIDATION = 'Problème lors de la communication avec le module';
+
+      CST_GPIO_OFF = '0';
+      CST_GPIO_GREEN = '5';
+      CST_GPIO_YELLOW = '14';
+      CST_GPIO_RED = '4';
+
+      CST_HINT_OFF = 'Projet perso - Invisible';
+      CST_HINT_GREEN = 'Projet perso - Disponible';
+      CST_HINT_RED = 'Projet perso - Absent';
+      CST_HINT_YELLOW = 'Projet perso - Occupé';
+      CST_HINT_WARN = 'Projet perso - Problème de connexion';
+
+      CST_IMG_OFF = 0;
+      CST_IMG_GREEN = 1;
+      CST_IMG_YELLOW = 2;
+      CST_IMG_RED = 3;
+      CST_IMG_WARN = 5;
+
+      CST_RESULT_OFF = 'OFF';
+      CST_RESULT_GREEN = 'GREEN';
+      CST_RESULT_YELLOW = 'YELLOW';
+      CST_RESULT_RED = 'RED';
+
+      CST_URL_READ_REVICE = 'readDeviceName';
+      CST_URL_READ_LED = 'readLED';
+      CST_URL_SET_GPIO = 'setGPIO?gpio=';
+
+      { const }
+
+   strict private
       FbCanClose: Boolean;
 
+      /// <summary>
+      /// Gère l'état des différents boutons d'actions
+      /// </summary>
+      /// <param name="bState">
+      /// Etat à affecter
+      /// </param>
       procedure EnableButtons(bState: Boolean);
 
       /// <summary>
@@ -67,50 +113,37 @@ type
       function HttpGet(sUrl: string): string;
 
       /// <summary>
-      /// Permet de mettre à jour l'image du TrayIcon en fonction de la LED allumée.
+      /// Permet de mettre à jour l'image du TrayIcon en fonction de la LED allumée
       /// </summary>
       /// <param name="sResult">
       /// Etat de la LED que l'on souhaite afficher : [OFF, GREEN, RED, YELLOW]
       /// </param>
       /// <remarks>
-      /// Si sResultat est vide, on va récupérer la valeur de la LED actuellement active sur le module.
-      /// Si sResultat est non conforme, on affiche un icone Warning
+      /// Si sResult est vide, on va récupérer la valeur de la LED actuellement active sur le module.
+      /// Si sResult est non conforme, on affiche un icone Warning
       /// </remarks>
       procedure UpdateTrayIcon(sResult: string = '');
 
-      { Déclarations privées }
+      /// <summary>
+      /// Permet de faire un ShellAPI.ShellExecute plus simplement
+      /// </summary>
+      /// <param name="FileName">
+      /// Correspond à FileName de ShellAPI.ShellExecute
+      /// </param>
+      /// <param name="Parameters">
+      /// Correspond à Parameters de ShellAPI.ShellExecute
+      /// </param>
+      procedure ShellOpen(const FileName: string;
+        const Parameters: string = '');
+
+      { strict private }
 
    protected
       procedure CreateWnd; override;
       procedure DestroyWindowHandle; override;
       procedure WndProc(var Message: TMessage); override;
 
-   Const
-      CST_IMG_OFF = 0;
-      CST_IMG_GREEN = 1;
-      CST_IMG_YELLOW = 2;
-      CST_IMG_RED = 3;
-      CST_IMG_WARN = 5;
-      CST_IMG_ICON = 7;
-
-      CST_GPIO_OFF = '0';
-      CST_GPIO_GREEN = '5';
-      CST_GPIO_YELLOW = '14';
-      CST_GPIO_RED = '4';
-
-      CST_RESULT_OFF = 'OFF';
-      CST_RESULT_GREEN = 'GREEN';
-      CST_RESULT_YELLOW = 'YELLOW';
-      CST_RESULT_RED = 'RED';
-
-      CST_URL_READ_REVICE = 'readDeviceName';
-      CST_URL_READ_LED = 'readLED';
-      CST_URL_SET_GPIO = 'setGPIO?gpio=';
-
-      CST_CONF_FILE = 'ProjetPersoConf.ini';
-
-   public
-      { Déclarations publiques }
+      { protected }
 
    end;
 
@@ -121,7 +154,7 @@ implementation
 
 {$R *.dfm}
 
-uses IniFiles, IdHTTP;
+uses IniFiles, IdHTTP, ShellAPI;
 
 // Fonctions permettant de s'abonner au verrouillage / déverrouillage de la session Windows
 function WTSRegisterSessionNotification(hWnd: hWnd; dwFlags: DWORD): Boolean;
@@ -149,10 +182,10 @@ function TfProjetPerso.HttpGet(sUrl: string): string;
 var
    HTTP: TidHTTP;
 begin
-   Result := 'ERROR';
+   Result := CST_ERROR;
    HTTP := TidHTTP.Create(nil);
    try
-      HTTP.ConnectTimeout := 1000;
+      HTTP.ConnectTimeout := 1000; // 1s
       try
          Result := HTTP.Get(sUrl);
       except
@@ -162,9 +195,20 @@ begin
    end;
 end;
 
+procedure TfProjetPerso.llSourcesClick(Sender: TObject);
+begin
+   ShellOpen(llSources.Hint);
+end;
+
 procedure TfProjetPerso.myTrayIconDblClick(Sender: TObject);
 begin
    fProjetPerso.Visible := not fProjetPerso.Visible;
+end;
+
+procedure TfProjetPerso.ShellOpen(const FileName, Parameters: string);
+begin
+   ShellAPI.ShellExecute(0, 'Open', PChar(FileName), PChar(Parameters), nil,
+     SW_SHOWNORMAL);
 end;
 
 procedure TfProjetPerso.bValiderClick(Sender: TObject);
@@ -189,7 +233,7 @@ begin
    else
    begin
       EnableButtons(False);
-      showmessage('Problème lors de la communication avec le module');
+      showmessage(CST_ERROR_VALIDATION);
    end;
 
    UpdateTrayIcon;
@@ -207,6 +251,11 @@ var
    ifIniFile: TIniFile;
 begin
    FbCanClose := False;
+
+   iHelp.Stretch := True; // to make it as large as Image1
+   iHelp.Proportional := True; // to keep width/height ratio
+   iHelp.Picture.Bitmap := nil; // clear previous image
+   imageList32.GetBitmap(6, iHelp.Picture.Bitmap);
 
    ifIniFile := TIniFile.Create((ExtractFileDir(ParamStr(0))) + '\' +
      CST_CONF_FILE);
@@ -229,7 +278,7 @@ begin
 
    EnableButtons(eUrl.Text <> '');
 
-   // Traiter le masquage de la fiche si tt ok
+   // Traiter le masquage de la fiche si tout est ok
    fProjetPerso.Visible := eUrl.Text = '';
 end;
 
@@ -268,27 +317,27 @@ begin
    if sResult = CST_RESULT_OFF then
    begin
       myTrayIcon.IconIndex := CST_IMG_OFF;
-      myTrayIcon.Hint := 'Projet perso - Invisible';
+      myTrayIcon.Hint := CST_HINT_OFF;
    end
    else if sResult = CST_RESULT_GREEN then
    begin
       myTrayIcon.IconIndex := CST_IMG_GREEN;
-      myTrayIcon.Hint := 'Projet perso - Disponible';
+      myTrayIcon.Hint := CST_HINT_GREEN;
    end
    else if sResult = CST_RESULT_YELLOW then
    begin
       myTrayIcon.IconIndex := CST_IMG_YELLOW;
-      myTrayIcon.Hint := 'Projet perso - Absent';
+      myTrayIcon.Hint := CST_HINT_YELLOW;
    end
    else if sResult = CST_RESULT_RED then
    begin
       myTrayIcon.IconIndex := CST_IMG_RED;
-      myTrayIcon.Hint := 'Projet perso - Occupé';
+      myTrayIcon.Hint := CST_HINT_RED;
    end
    else
    begin
       myTrayIcon.IconIndex := CST_IMG_WARN;
-      myTrayIcon.Hint := 'Projet perso - Problème de connexion';
+      myTrayIcon.Hint := CST_HINT_WARN;
    end;
 end;
 

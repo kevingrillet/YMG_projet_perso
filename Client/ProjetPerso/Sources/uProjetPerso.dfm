@@ -4,8 +4,8 @@ object fProjetPerso: TfProjetPerso
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'Projet perso'
-  ClientHeight = 181
-  ClientWidth = 455
+  ClientHeight = 171
+  ClientWidth = 450
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -22,166 +22,264 @@ object fProjetPerso: TfProjetPerso
   object pParam: TPanel
     Left = 0
     Top = 0
-    Width = 455
-    Height = 60
+    Width = 450
+    Height = 47
     Align = alTop
+    BevelEdges = [beBottom]
     TabOrder = 0
     object lParam: TLabel
       AlignWithMargins = True
       Left = 4
       Top = 4
-      Width = 447
+      Width = 442
       Height = 13
       Align = alTop
       Caption = 'Param'#232'tres'
-      ExplicitLeft = 1
-      ExplicitTop = 1
       ExplicitWidth = 55
     end
     object eUrl: TEdit
       AlignWithMargins = True
-      Left = 11
-      Top = 30
-      Width = 347
-      Height = 19
-      Margins.Left = 10
-      Margins.Top = 10
-      Margins.Right = 10
-      Margins.Bottom = 10
+      Left = 4
+      Top = 23
+      Width = 372
+      Height = 20
       Align = alClient
       TabOrder = 0
       Text = 'eUrl'
-      ExplicitTop = 24
-      ExplicitWidth = 337
+      ExplicitLeft = 11
+      ExplicitTop = 30
+      ExplicitWidth = 347
       ExplicitHeight = 21
     end
     object bValider: TBitBtn
       AlignWithMargins = True
-      Left = 378
-      Top = 30
+      Left = 381
+      Top = 22
       Width = 66
-      Height = 19
-      Margins.Left = 10
-      Margins.Top = 10
-      Margins.Right = 10
-      Margins.Bottom = 10
+      Height = 22
+      Margins.Left = 2
+      Margins.Top = 2
+      Margins.Right = 2
+      Margins.Bottom = 2
       Align = alRight
       Caption = 'Valider'
       ImageIndex = 0
       Images = imageList16
       TabOrder = 1
       OnClick = bValiderClick
-      ExplicitLeft = 368
-      ExplicitTop = 24
-      ExplicitHeight = 22
+      ExplicitLeft = 378
+      ExplicitTop = 30
+      ExplicitHeight = 19
     end
   end
-  object pInfos: TPanel
+  object pActions: TPanel
     Left = 0
-    Top = 116
-    Width = 455
-    Height = 65
-    Align = alClient
+    Top = 97
+    Width = 450
+    Height = 50
+    Align = alTop
+    BevelEdges = [beBottom]
     TabOrder = 2
-    ExplicitTop = 57
-    ExplicitWidth = 445
-    ExplicitHeight = 55
+    ExplicitTop = 100
     object lActions: TLabel
       AlignWithMargins = True
       Left = 4
       Top = 4
-      Width = 447
+      Width = 442
       Height = 13
       Align = alTop
       Caption = 'Actions'
-      ExplicitLeft = 1
-      ExplicitTop = 1
       ExplicitWidth = 35
     end
-    object bGreen: TBitBtn
-      Left = 8
-      Top = 24
-      Width = 100
-      Height = 25
-      Caption = 'Disponible'
-      ImageIndex = 1
-      Images = imageList32
+    object fpActions: TFlowPanel
+      AlignWithMargins = True
+      Left = 4
+      Top = 20
+      Width = 442
+      Height = 29
+      Margins.Top = 0
+      Margins.Bottom = 0
+      Align = alClient
+      BevelOuter = bvNone
       TabOrder = 0
-      OnClick = bBtnClick
-    end
-    object bOff: TBitBtn
-      Left = 336
-      Top = 24
-      Width = 100
-      Height = 25
-      Caption = 'Invisible'
-      ImageIndex = 0
-      Images = imageList32
-      TabOrder = 3
-      OnClick = bBtnClick
-    end
-    object bRed: TBitBtn
-      Left = 226
-      Top = 24
-      Width = 100
-      Height = 25
-      Caption = 'Occup'#233
-      ImageIndex = 3
-      Images = imageList32
-      TabOrder = 2
-      OnClick = bBtnClick
-    end
-    object bYellow: TBitBtn
-      Left = 117
-      Top = 24
-      Width = 100
-      Height = 25
-      Caption = 'Absent'
-      ImageIndex = 2
-      Images = imageList32
-      TabOrder = 1
-      OnClick = bBtnClick
+      ExplicitLeft = 136
+      ExplicitTop = 8
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+      object bOff: TBitBtn
+        AlignWithMargins = True
+        Left = 2
+        Top = 2
+        Width = 105
+        Height = 23
+        Margins.Left = 2
+        Margins.Top = 2
+        Margins.Right = 2
+        Margins.Bottom = 2
+        Caption = 'Invisible'
+        ImageIndex = 0
+        Images = imageList32
+        TabOrder = 0
+        OnClick = bBtnClick
+      end
+      object bGreen: TBitBtn
+        AlignWithMargins = True
+        Left = 111
+        Top = 2
+        Width = 105
+        Height = 23
+        Margins.Left = 2
+        Margins.Top = 2
+        Margins.Right = 2
+        Margins.Bottom = 2
+        Caption = 'Disponible'
+        ImageIndex = 1
+        Images = imageList32
+        TabOrder = 1
+        OnClick = bBtnClick
+      end
+      object bYellow: TBitBtn
+        AlignWithMargins = True
+        Left = 220
+        Top = 2
+        Width = 105
+        Height = 23
+        Margins.Left = 2
+        Margins.Top = 2
+        Margins.Right = 2
+        Margins.Bottom = 2
+        Caption = 'Absent'
+        ImageIndex = 2
+        Images = imageList32
+        TabOrder = 2
+        OnClick = bBtnClick
+      end
+      object bRed: TBitBtn
+        AlignWithMargins = True
+        Left = 329
+        Top = 2
+        Width = 105
+        Height = 23
+        Margins.Left = 2
+        Margins.Top = 2
+        Margins.Right = 2
+        Margins.Bottom = 2
+        Caption = 'Occup'#233
+        ImageIndex = 3
+        Images = imageList32
+        TabOrder = 3
+        OnClick = bBtnClick
+      end
     end
   end
   object pAuto: TPanel
     Left = 0
-    Top = 60
-    Width = 455
-    Height = 56
+    Top = 47
+    Width = 450
+    Height = 50
     Align = alTop
+    BevelEdges = [beBottom]
     TabOrder = 1
-    ExplicitTop = 57
-    ExplicitWidth = 445
-    object Label1: TLabel
+    ExplicitTop = 50
+    object lAuto: TLabel
       AlignWithMargins = True
       Left = 4
       Top = 4
-      Width = 447
+      Width = 442
       Height = 13
       Align = alTop
       Caption = 'Actions automatiques'
-      ExplicitLeft = 0
-      ExplicitTop = 6
       ExplicitWidth = 103
     end
-    object cbWindows: TCheckBox
-      Left = 7
-      Top = 25
-      Width = 193
-      Height = 17
-      Caption = 'Session Windows'
-      Checked = True
-      State = cbChecked
+    object fpAuto: TFlowPanel
+      AlignWithMargins = True
+      Left = 4
+      Top = 20
+      Width = 442
+      Height = 29
+      Margins.Top = 0
+      Margins.Bottom = 0
+      Align = alClient
+      BevelOuter = bvNone
       TabOrder = 0
+      ExplicitLeft = 251
+      ExplicitTop = 13
+      ExplicitWidth = 185
+      ExplicitHeight = 41
+      object cbWindows: TCheckBox
+        AlignWithMargins = True
+        Left = 3
+        Top = 3
+        Width = 214
+        Height = 17
+        Caption = 'Session Windows'
+        Checked = True
+        State = cbChecked
+        TabOrder = 0
+      end
+      object cbTeams: TCheckBox
+        AlignWithMargins = True
+        Left = 223
+        Top = 3
+        Width = 214
+        Height = 17
+        Caption = 'Teams'
+        Enabled = False
+        TabOrder = 1
+      end
     end
-    object cbTeams: TCheckBox
-      Left = 219
-      Top = 25
-      Width = 205
-      Height = 17
-      Caption = 'Teams'
-      Enabled = False
-      TabOrder = 1
+  end
+  object pFooter: TPanel
+    Left = 0
+    Top = 147
+    Width = 450
+    Height = 24
+    Align = alClient
+    BevelEdges = [beBottom]
+    TabOrder = 3
+    ExplicitLeft = 117
+    ExplicitTop = 187
+    ExplicitWidth = 185
+    ExplicitHeight = 41
+    object lSources: TLabel
+      AlignWithMargins = True
+      Left = 23
+      Top = 4
+      Width = 129
+      Height = 16
+      Align = alLeft
+      Caption = 'Sources et documentation:'
+      ExplicitHeight = 13
+    end
+    object iHelp: TImage
+      AlignWithMargins = True
+      Left = 2
+      Top = 2
+      Width = 17
+      Height = 20
+      Margins.Left = 1
+      Margins.Top = 1
+      Margins.Right = 1
+      Margins.Bottom = 1
+      Align = alLeft
+      ExplicitHeight = 17
+    end
+    object llSources: TLinkLabel
+      AlignWithMargins = True
+      Left = 158
+      Top = 4
+      Width = 288
+      Height = 16
+      Hint = 'https://github.com/kevingrillet/YMG_projet_perso'
+      Align = alClient
+      Caption = '<a>https://github.com/kevingrillet/YMG_projet_perso</a>'
+      Color = clBtnFace
+      ParentColor = False
+      TabOrder = 0
+      OnClick = llSourcesClick
+      ExplicitLeft = 71
+      ExplicitWidth = 242
+      ExplicitHeight = 17
     end
   end
   object myTrayIcon: TTrayIcon

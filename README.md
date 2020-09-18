@@ -4,7 +4,9 @@ Projet ayant pour objectif de faire une signalétique de la disponibilité de qu
 
 Un peu comme les voyants au-dessus des places de parking de centre commercial.
 
-Cette idée nous vient d'un cas réel: les CDP ayant été nos voisins pendant presque un an nous avons répondu toutes les 10 minutes à la question "Est ce qu'ils sont disponibles?" car leur porte était fermée.
+![](https://raw.githubusercontent.com/kevingrillet/YMG_projet_perso/master/Documentation/Parking.jpg)(<https://www.ledinside.com/press/2017/2/circontrol_s_ledpark_achieves_85_savings_in_car_park_lighting>)
+
+Cette idée nous vient d'un cas réel : les CDP ayant été nos voisins pendant presque un an nous avons répondu toutes les 10 minutes à la question "Est-ce qu'ils sont disponibles ?" car leur porte était fermée.
 
 ## IOT: ESP8266
 
@@ -32,15 +34,6 @@ En se branchant au moniteur série lors de son premier démarrage (après avoir 
 
 Pour trouver le module plus facilement, il est possible de s'aider d'un [IP Scanner](<https://www.advanced-ip-scanner.com/>).
 
-### Évolutions possibles pour un module multi-utilisateur
-
-- Ajouter une gestion multilisateur via une ```map``` où les statuts sont affichés suivant la règle suivante:
-
-    - ```Occupé [RED] > Absent [YELLOW] > Disponible [GREEN] > Invisible [OFF]```
-
-- Ajouter un système pour vider la map toutes les heures pour ne pas conserver un utilisateur n'ayant pas été déconnecté proprement.
-	- <https://circuits4you.com/2018/01/02/esp8266-nodemcu-ntp-time-clock/>
-
 ## Client
 
 Le client à pour objectif d'envoyer au module les informations de disponibilité.
@@ -48,22 +41,21 @@ Le client à pour objectif d'envoyer au module les informations de disponibilit�
 Il doit ainsi récupérer l'état de l'utilisateur en regardant dans :
 
 - Windows
-    - <https://stackoverflow.com/questions/45988192/detect-when-user-locks-unlocks-screen-in-windows-7-with-delphi>
+
 - Teams
-    - Authentification:
-        - <https://docs.microsoft.com/fr-fr/graph/auth-register-app-v2?context=graph%2Fapi%2Fbeta&view=graph-rest-beta>
-        - <https://www.example-code.com/delphidll/microsoft_graph_oauth2_access_token.asp>
-    - Présence:
-        - <https://docs.microsoft.com/fr-fr/graph/api/presence-get?view=graph-rest-beta&tabs=http> 
 
-Pour Teams ce n'est actuellement pas possible, nous avons un problème avec l'inscription de notre application sur la Plateforme d’identités Microsoft. Nous n'avons pas les droits.
-
-
+_Pour Teams ce n'est actuellement pas possible, nous avons un problème avec l'inscription de notre application sur la Plateforme d’identités Microsoft. Nous n'avons pas les droits._
 
 ### Langage
 
-Le client a été réalisé en Delphi.
+Le client a été réalisé en Delphi, langage que nous utilisons avec Thierry.
 
 Il se compose d'un écran de paramétrage et d'une TrayIcon, et enregistre son paramétrage (IP et automatismes) dans un fichier ```.ini``` caché.
 
 ![](https://raw.githubusercontent.com/kevingrillet/YMG_projet_perso/master/Client/R&D/ProjetPerso-Client.png)
+
+### Sources
+
+Le code est disponible à cet emplacement:  [```Client/ProjetPerso/Sources```](<https://github.com/kevingrillet/YMG_projet_perso/tree/master/Client/ProjetPerso/Sources>).
+
+Il y a aussi [```Client\ReadMe.md```](<https://github.com/kevingrillet/YMG_projet_perso/tree/master/Client/>) pour aider à la compréhension du code.

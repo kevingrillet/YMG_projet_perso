@@ -198,6 +198,7 @@ const char MAIN_page[] PROGMEM = R"=====(
           <path id="svgC12" clip-rule="evenodd" d="M16.884,83.7V57.456l9.36,11.448V83.7H16.884z" style="fill: #888888;" fill-rule="evenodd" i:knockout="Off" />
         </g>
       </svg>
+      Sources: <a href="https://github.com/kevingrillet/YMG_projet_perso">https://github.com/kevingrillet/YMG_projet_perso</a>
     </div>
     <script>
       function readDeviceName() {

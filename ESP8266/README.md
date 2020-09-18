@@ -41,6 +41,16 @@
 |---|
 |```[OFF, GREEN, RED, YELLOW]```|
 
+## Utilisation sans l'interface graphique web
+
+Il est possible de retirer l'interface graphique web en mettant en supprimant ou commentant la ligne :
+
+```
+  server.on("/", handleRoot);
+```
+
+Cela permet de commenter supprimer la procedure ```void handleRoot()``` et la constante ```const char MAIN_page[] PROGMEM```.
+
 ## Sources
 
 ### ESP8266 - Web Server + HTML
@@ -319,3 +329,12 @@ void setup(void){
 
 ### Câblage
 ![](https://raw.githubusercontent.com/kevingrillet/YMG_projet_perso/master/ESP8266/R&D/ProjetPerso-ESP8266_bb.png)
+
+### Évolutions possibles pour un module multi-utilisateur
+
+- Ajouter une gestion multilisateur via une ```map``` où les statuts sont affichés suivant la règle suivante:
+
+    - ```Occupé [RED] > Absent [YELLOW] > Disponible [GREEN] > Invisible [OFF]```
+
+- Ajouter un système pour vider la map toutes les heures pour ne pas conserver un utilisateur n'ayant pas été déconnecté proprement.
+	- <https://circuits4you.com/2018/01/02/esp8266-nodemcu-ntp-time-clock/>
