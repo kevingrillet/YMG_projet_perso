@@ -53,33 +53,40 @@ type
       procedure llSourcesClick(Sender: TObject);
 
    const
+      // Adresse du fichier de configuration
       CST_CONF_FILE = 'ProjetPersoConf.ini';
 
+      // Gestion des erreurs
       CST_ERROR = 'ERROR';
       CST_ERROR_VALIDATION = 'Problème lors de la communication avec le module';
 
+      // Les différents GPIO pour modifier l'état d'une LED
       CST_GPIO_OFF = '0';
       CST_GPIO_GREEN = '5';
       CST_GPIO_YELLOW = '14';
       CST_GPIO_RED = '4';
 
+      // Les hint suivant l'état de la LED
       CST_HINT_OFF = 'Projet perso - Invisible';
       CST_HINT_GREEN = 'Projet perso - Disponible';
       CST_HINT_RED = 'Projet perso - Absent';
       CST_HINT_YELLOW = 'Projet perso - Occupé';
       CST_HINT_WARN = 'Projet perso - Problème de connexion';
 
+      // Les images suivant l'état de la LED
       CST_IMG_OFF = 0;
       CST_IMG_GREEN = 1;
       CST_IMG_YELLOW = 2;
       CST_IMG_RED = 3;
       CST_IMG_WARN = 5;
 
+      // Le résultat de l'état de la LED
       CST_RESULT_OFF = 'OFF';
       CST_RESULT_GREEN = 'GREEN';
       CST_RESULT_YELLOW = 'YELLOW';
       CST_RESULT_RED = 'RED';
 
+      // Les différentes adresses à contacter sur le module
       CST_URL_READ_REVICE = 'readDeviceName';
       CST_URL_READ_LED = 'readLED';
       CST_URL_SET_GPIO = 'setGPIO?gpio=';
@@ -279,7 +286,8 @@ begin
    EnableButtons(eUrl.Text <> '');
 
    // Traiter le masquage de la fiche si tout est ok
-   fProjetPerso.Visible := eUrl.Text = '';
+   fProjetPerso.Visible := (eUrl.Text = '') and
+     (myTrayIcon.IconIndex <> CST_IMG_WARN);
 end;
 
 procedure TfProjetPerso.FormDestroy(Sender: TObject);
