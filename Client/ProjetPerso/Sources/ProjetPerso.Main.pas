@@ -1,4 +1,4 @@
-unit uProjetPerso;
+unit ProjetPerso.Main;
 
 interface
 
@@ -6,32 +6,21 @@ uses
    Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants,
    System.Classes, Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs,
    Vcl.StdCtrls, Vcl.Buttons, Vcl.ExtCtrls, Vcl.Menus, System.ImageList,
-   Vcl.ImgList;
+   Vcl.ImgList, Vcl.ComCtrls,
+   ProjetPerso.AzureOauth2.Model;
 
 type
-   TfProjetPerso = class(TForm)
-      myTrayIcon: TTrayIcon;
-      bGreen: TBitBtn;
-      bRed: TBitBtn;
-      bYellow: TBitBtn;
-      bOff: TBitBtn;
-      pParam: TPanel;
+   TfProjetPersoMain = class(TForm)
+      bGreen: TButton;
+      bRed: TButton;
+      bYellow: TButton;
+      bOff: TButton;
+      pAdresse: TPanel;
       eUrl: TEdit;
-      bValider: TBitBtn;
-      lParam: TLabel;
+      bValider: TButton;
+      lAdresse: TLabel;
       pActions: TPanel;
-      popupMenuTrayIcon: TPopupMenu;
-      miParam: TMenuItem;
-      miGreen: TMenuItem;
-      miRed: TMenuItem;
-      miYellow: TMenuItem;
-      miOff: TMenuItem;
-      N1: TMenuItem;
-      miClose: TMenuItem;
-      imageList32: TImageList;
       lActions: TLabel;
-      imageList16: TImageList;
-      miRefresh: TMenuItem;
       pAuto: TPanel;
       cbWindows: TCheckBox;
       cbTeams: TCheckBox;
@@ -42,6 +31,22 @@ type
       iHelp: TImage;
       fpAuto: TFlowPanel;
       fpActions: TFlowPanel;
+      pLog: TPanel;
+      pParam: TPanel;
+      cbLog: TCheckBox;
+      lParam: TLabel;
+      llLog: TLinkLabel;
+      reLog: TRichEdit;
+      pLogParam: TPanel;
+      lLog: TLabel;
+      pTeams: TPanel;
+      lTeams: TLabel;
+      bLogin: TButton;
+      bGetToken: TButton;
+      fbLogin: TFlowPanel;
+      lLogin: TLabel;
+      eToken: TEdit;
+      fbToken: TFlowPanel;
       procedure bValiderClick(Sender: TObject);
       procedure FormCreate(Sender: TObject);
       procedure bBtnClick(Sender: TObject);
@@ -51,43 +56,13 @@ type
       procedure miRefreshClick(Sender: TObject);
       procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
       procedure llSourcesClick(Sender: TObject);
-
-   const
-      CST_CONF_FILE = 'ProjetPersoConf.ini';
-
-      CST_ERROR = 'ERROR';
-      CST_ERROR_VALIDATION = 'Problème lors de la communication avec le module';
-
-      CST_GPIO_OFF = '0';
-      CST_GPIO_GREEN = '5';
-      CST_GPIO_YELLOW = '14';
-      CST_GPIO_RED = '4';
-
-      CST_HINT_OFF = 'Projet perso - Invisible';
-      CST_HINT_GREEN = 'Projet perso - Disponible';
-      CST_HINT_RED = 'Projet perso - Absent';
-      CST_HINT_YELLOW = 'Projet perso - Occupé';
-      CST_HINT_WARN = 'Projet perso - Problème de connexion';
-
-      CST_IMG_OFF = 0;
-      CST_IMG_GREEN = 1;
-      CST_IMG_YELLOW = 2;
-      CST_IMG_RED = 3;
-      CST_IMG_WARN = 5;
-
-      CST_RESULT_OFF = 'OFF';
-      CST_RESULT_GREEN = 'GREEN';
-      CST_RESULT_YELLOW = 'YELLOW';
-      CST_RESULT_RED = 'RED';
-
-      CST_URL_READ_REVICE = 'readDeviceName';
-      CST_URL_READ_LED = 'readLED';
-      CST_URL_SET_GPIO = 'setGPIO?gpio=';
-
-      { const }
+      procedure cbTeamsClick(Sender: TObject);
+      procedure bLoginClick(Sender: TObject);
+      procedure bGetTokenClick(Sender: TObject);
 
    strict private
       FbCanClose: Boolean;
+      FcCur: TCursor;
 
       /// <summary>
       /// Gère l'état des différents boutons d'actions
@@ -96,6 +71,8 @@ type
       /// Etat à affecter
       /// </param>
       procedure EnableButtons(bState: Boolean);
+
+      procedure GetToken(sString: string);
 
       /// <summary>
       /// Permet de dialoguer avec le module via une requète HttpGet
@@ -148,13 +125,15 @@ type
    end;
 
 var
-   fProjetPerso: TfProjetPerso;
+   fProjetPersoMain: TfProjetPersoMain;
 
 implementation
 
 {$R *.dfm}
 
-uses IniFiles, IdHTTP, ShellAPI;
+uses IniFiles, IdHTTP, ShellAPI,
+   ProjetPerso.Constantes, ProjetPerso.Images, ProjetPerso.TrayIcon,
+   ProjetPerso.AzureOauth2.Authorize, ProjetPerso.AzureOauth2.Rest;
 
 // Fonctions permettant de s'abonner au verrouillage / déverrouillage de la session Windows
 function WTSRegisterSessionNotification(hWnd: hWnd; dwFlags: DWORD): Boolean;
@@ -162,27 +141,30 @@ function WTSRegisterSessionNotification(hWnd: hWnd; dwFlags: DWORD): Boolean;
 function WTSUnRegisterSessionNotification(hWnd: hWnd): Boolean; stdcall;
   external 'wtsapi32.dll' name 'WTSUnRegisterSessionNotification';
 
-procedure TfProjetPerso.bBtnClick(Sender: TObject);
+procedure TfProjetPersoMain.bBtnClick(Sender: TObject);
 var
    sGPIO: string;
 begin
-   if (Sender = bOff) or (Sender = miOff) then
+   if (Sender = bOff) or (Sender = dmTrayIcon.miOff) then
       sGPIO := CST_GPIO_OFF
-   else if (Sender = bGreen) or (Sender = miGreen) then
+   else if (Sender = bGreen) or (Sender = dmTrayIcon.miGreen) then
       sGPIO := CST_GPIO_GREEN
-   else if (Sender = bYellow) or (Sender = miYellow) then
+   else if (Sender = bYellow) or (Sender = dmTrayIcon.miYellow) then
       sGPIO := CST_GPIO_YELLOW
-   else if (Sender = bRed) or (Sender = miRed) then
+   else if (Sender = bRed) or (Sender = dmTrayIcon.miRed) then
       sGPIO := CST_GPIO_RED;
 
    UpdateTrayIcon(HttpGet(eUrl.Text + CST_URL_SET_GPIO + sGPIO));
 end;
 
-function TfProjetPerso.HttpGet(sUrl: string): string;
+function TfProjetPersoMain.HttpGet(sUrl: string): string;
 var
    HTTP: TidHTTP;
 begin
    Result := CST_ERROR;
+   if (eUrl.Text = '') then
+      exit;
+
    HTTP := TidHTTP.Create(nil);
    try
       HTTP.ConnectTimeout := 1000; // 1s
@@ -195,26 +177,50 @@ begin
    end;
 end;
 
-procedure TfProjetPerso.llSourcesClick(Sender: TObject);
+procedure TfProjetPersoMain.llSourcesClick(Sender: TObject);
 begin
    ShellOpen(llSources.Hint);
 end;
 
-procedure TfProjetPerso.myTrayIconDblClick(Sender: TObject);
+procedure TfProjetPersoMain.myTrayIconDblClick(Sender: TObject);
 begin
-   fProjetPerso.Visible := not fProjetPerso.Visible;
+   fProjetPersoMain.Visible := not fProjetPersoMain.Visible;
 end;
 
-procedure TfProjetPerso.ShellOpen(const FileName, Parameters: string);
+procedure TfProjetPersoMain.ShellOpen(const FileName, Parameters: string);
 begin
    ShellAPI.ShellExecute(0, 'Open', PChar(FileName), PChar(Parameters), nil,
      SW_SHOWNORMAL);
 end;
 
-procedure TfProjetPerso.bValiderClick(Sender: TObject);
+procedure TfProjetPersoMain.bGetTokenClick(Sender: TObject);
+begin
+   FcCur := Screen.Cursor;
+   Screen.Cursor := crHourGlass;
+   dmAzureOauth2Rest.GetToken;
+end;
+
+procedure TfProjetPersoMain.bLoginClick(Sender: TObject);
+var
+   sTemp: string;
+begin
+   Visible := False;
+   sTemp := dmAzureOauth2Rest.login;
+   Visible := True;
+
+   if sTemp <> 'ERROR' then
+   begin
+      reLog.Lines.Add('Authentication Code: ' + sTemp.Substring(0, 8) + '...');
+      bGetToken.Enabled := True;
+   end;
+end;
+
+procedure TfProjetPersoMain.bValiderClick(Sender: TObject);
 var
    ifIniFile: TIniFile;
 begin
+   FcCur := Screen.Cursor;
+   Screen.Cursor := crHourGlass;
    if HttpGet(eUrl.Text + CST_URL_READ_REVICE) <> '' then
    begin
       ifIniFile := TIniFile.Create((ExtractFileDir(ParamStr(0))) + '\' +
@@ -234,41 +240,58 @@ begin
    begin
       EnableButtons(False);
       showmessage(CST_ERROR_VALIDATION);
+      eUrl.Text := '';
    end;
 
    UpdateTrayIcon;
+   Screen.Cursor := FcCur;
 end;
 
-procedure TfProjetPerso.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+procedure TfProjetPersoMain.cbTeamsClick(Sender: TObject);
+begin
+   bLogin.Enabled := cbTeams.State = cbChecked;
+end;
+
+procedure TfProjetPersoMain.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
 begin
    CanClose := FbCanClose;
    if not CanClose then
-      fProjetPerso.Visible := False;
+      fProjetPersoMain.Visible := False;
 end;
 
-procedure TfProjetPerso.FormCreate(Sender: TObject);
+procedure TfProjetPersoMain.FormCreate(Sender: TObject);
 var
    ifIniFile: TIniFile;
 begin
    FbCanClose := False;
 
-   iHelp.Stretch := True; // to make it as large as Image1
-   iHelp.Proportional := True; // to keep width/height ratio
-   iHelp.Picture.Bitmap := nil; // clear previous image
-   imageList32.GetBitmap(6, iHelp.Picture.Bitmap);
+   iHelp.Stretch := True;
+   iHelp.Proportional := True;
+   iHelp.Picture.Bitmap := nil;
+   dmImages.imageList32.GetBitmap(6, iHelp.Picture.Bitmap);
+
+   // On init ProjetPerso.TrayIcon
+   dmTrayIcon.SetAction(bBtnClick);
+   dmTrayIcon.SetParam(myTrayIconDblClick);
+   dmTrayIcon.SetRefresh(miRefreshClick);
+   dmTrayIcon.SetClose(miCloseClick);
+
+   // On init ProjetPerso.AzureOauth2.Rest
+   dmAzureOauth2Rest.Init(GetToken);
 
    ifIniFile := TIniFile.Create((ExtractFileDir(ParamStr(0))) + '\' +
      CST_CONF_FILE);
    try
       eUrl.Text := ifIniFile.ReadString('CONF', 'Url', '');
-      if ifIniFile.ReadBool('AUTO', 'Session', True) then
+      if ifIniFile.ReadBool('AUTO', 'Session', False) then
          cbWindows.State := cbChecked
       else
          cbWindows.State := cbUnChecked;
-      // if ifIniFile.ReadBool('AUTO', 'Teams', True) then
-      // cbTeams.State := cbChecked
-      // else
-      // cbTeams.State := cbUnChecked;
+      if ifIniFile.ReadBool('AUTO', 'Teams', False) then
+         cbTeams.State := cbChecked
+      else
+         cbTeams.State := cbUnChecked;
    finally
       ifIniFile.Free;
    end;
@@ -279,99 +302,126 @@ begin
    EnableButtons(eUrl.Text <> '');
 
    // Traiter le masquage de la fiche si tout est ok
-   fProjetPerso.Visible := eUrl.Text = '';
+   fProjetPersoMain.Visible := (eUrl.Text = '') and
+     (dmTrayIcon.myTrayIcon.IconIndex <> CST_IMG_WARN);
 end;
 
-procedure TfProjetPerso.FormDestroy(Sender: TObject);
+procedure TfProjetPersoMain.FormDestroy(Sender: TObject);
 var
    ifIniFile: TIniFile;
 begin
-   ifIniFile := TIniFile.Create((ExtractFileDir(ParamStr(0))) + '\' +
-     CST_CONF_FILE);
-   try
-      ifIniFile.WriteBool('AUTO', 'Session', cbWindows.State = cbChecked);
-      ifIniFile.WriteBool('AUTO', 'Teams', cbTeams.State = cbChecked);
-   finally
-      ifIniFile.Free;
+   if eUrl.Text <> '' then
+   begin
+      ifIniFile := TIniFile.Create((ExtractFileDir(ParamStr(0))) + '\' +
+        CST_CONF_FILE);
+      try
+         ifIniFile.WriteBool('AUTO', 'Session', cbWindows.State = cbChecked);
+         ifIniFile.WriteBool('AUTO', 'Teams', cbTeams.State = cbChecked);
+      finally
+         ifIniFile.Free;
+      end;
+      HttpGet(eUrl.Text + CST_URL_SET_GPIO + CST_GPIO_OFF);
    end;
-
-   HttpGet(eUrl.Text + CST_URL_SET_GPIO + CST_GPIO_OFF);
 end;
 
-procedure TfProjetPerso.miCloseClick(Sender: TObject);
+procedure TfProjetPersoMain.GetToken(sString: string);
+var
+   ifIniFile: TIniFile;
+begin
+   if sString <> 'ERROR' then
+   begin
+      reLog.Lines.Add('Access Token: ' + sString);
+      eToken.Text := sString;
+
+      ifIniFile := TIniFile.Create((ExtractFileDir(ParamStr(0))) + '\' +
+        CST_CONF_FILE);
+      try
+         ifIniFile.WriteString('Teams', 'AccessToken', sString);
+      finally
+         ifIniFile.Free;
+      end;
+   end;
+   Screen.Cursor := FcCur;
+end;
+
+procedure TfProjetPersoMain.miCloseClick(Sender: TObject);
 begin
    FbCanClose := True;
    Close;
 end;
 
-procedure TfProjetPerso.miRefreshClick(Sender: TObject);
+procedure TfProjetPersoMain.miRefreshClick(Sender: TObject);
 begin
    UpdateTrayIcon;
 end;
 
-procedure TfProjetPerso.UpdateTrayIcon(sResult: string = '');
+procedure TfProjetPersoMain.UpdateTrayIcon(sResult: string = '');
 begin
-   if sResult = '' then
+   if (sResult = '') then
       sResult := HttpGet(eUrl.Text + CST_URL_READ_LED);
 
    if sResult = CST_RESULT_OFF then
    begin
-      myTrayIcon.IconIndex := CST_IMG_OFF;
-      myTrayIcon.Hint := CST_HINT_OFF;
+      dmTrayIcon.myTrayIcon.IconIndex := CST_IMG_OFF;
+      dmTrayIcon.myTrayIcon.Hint := CST_HINT_OFF;
    end
    else if sResult = CST_RESULT_GREEN then
    begin
-      myTrayIcon.IconIndex := CST_IMG_GREEN;
-      myTrayIcon.Hint := CST_HINT_GREEN;
+      dmTrayIcon.myTrayIcon.IconIndex := CST_IMG_GREEN;
+      dmTrayIcon.myTrayIcon.Hint := CST_HINT_GREEN;
    end
    else if sResult = CST_RESULT_YELLOW then
    begin
-      myTrayIcon.IconIndex := CST_IMG_YELLOW;
-      myTrayIcon.Hint := CST_HINT_YELLOW;
+      dmTrayIcon.myTrayIcon.IconIndex := CST_IMG_YELLOW;
+      dmTrayIcon.myTrayIcon.Hint := CST_HINT_YELLOW;
    end
    else if sResult = CST_RESULT_RED then
    begin
-      myTrayIcon.IconIndex := CST_IMG_RED;
-      myTrayIcon.Hint := CST_HINT_RED;
+      dmTrayIcon.myTrayIcon.IconIndex := CST_IMG_RED;
+      dmTrayIcon.myTrayIcon.Hint := CST_HINT_RED;
    end
    else
    begin
-      myTrayIcon.IconIndex := CST_IMG_WARN;
-      myTrayIcon.Hint := CST_HINT_WARN;
+      dmTrayIcon.myTrayIcon.IconIndex := CST_IMG_WARN;
+      dmTrayIcon.myTrayIcon.Hint := CST_HINT_WARN;
    end;
 end;
 
-procedure TfProjetPerso.CreateWnd;
+procedure TfProjetPersoMain.CreateWnd;
 begin
    inherited;
    if not WTSRegisterSessionNotification(Handle, NOTIFY_FOR_THIS_SESSION) then
       RaiseLastOSError;
 end;
 
-procedure TfProjetPerso.DestroyWindowHandle;
+procedure TfProjetPersoMain.DestroyWindowHandle;
 begin
    WTSUnRegisterSessionNotification(Handle);
    inherited;
 end;
 
-procedure TfProjetPerso.EnableButtons(bState: Boolean);
+procedure TfProjetPersoMain.EnableButtons(bState: Boolean);
 begin
    bOff.Enabled := bState;
    bGreen.Enabled := bState;
    bYellow.Enabled := bState;
    bRed.Enabled := bState;
 
-   miOff.Enabled := bState;
-   miGreen.Enabled := bState;
-   miYellow.Enabled := bState;
-   miRed.Enabled := bState;
-   miRefresh.Enabled := bState;
+   cbWindows.Enabled := bState;
+   if not cbWindows.Enabled then
+      cbWindows.State := cbUnChecked;
+   cbTeams.Enabled := bState;
+   if not cbTeams.Enabled then
+      cbTeams.State := cbUnChecked;
+
+   dmTrayIcon.EnableButtons(bState);
 end;
 
-procedure TfProjetPerso.WndProc(var Message: TMessage);
+procedure TfProjetPersoMain.WndProc(var Message: TMessage);
 begin
    inherited;
    if not(Assigned(cbWindows) and (cbWindows.State = cbUnChecked)) then
+   begin
       if Message.Msg = WM_WTSSESSION_CHANGE then
       begin
          case Message.wParam of
@@ -383,6 +433,7 @@ begin
                  CST_GPIO_GREEN));
          end;
       end;
+   end;
 end;
 
 end.
